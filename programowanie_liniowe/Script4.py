@@ -1,6 +1,6 @@
-import numpy as np
-from cvxopt.modeling import variable, op, sum
 import matplotlib.pyplot as plt
+import numpy as np
+from cvxopt.modeling import variable, op
 
 data = np.genfromtxt('data01.csv', delimiter=',', dtype=None, encoding='utf-8')
 
@@ -43,19 +43,28 @@ def xn():
 alp = variable()
 blp = variable()
 
+va = variable()
+vb = variable()
 
-def res(a, b, xp):
-    return a * xp + b
+
+def res(ax, bx, xp):
+    return ax * xp + bx
 
 
 c1 = (alp + blp <= 1)
 c2 = (alp + blp >= 1)
 
-# p1 = op(np.array(np.multiply(np.array([[alp], [blp]]), np.array([1, 2])), [c1, c2]))
-#
-# p1.solve()
 
-# print(np.full(xn(), 1))
+# Assuming `op` is an optimization function from some library
+def solve_problem(a, b):
+    res = 0
+    for i in range(0, len(_x)):
+        res += abs(a * float(_x[i]) + b - float(_y[i]))
+    return res
+
+
+p1 = op(solve_problem(alp, blp), [])
+p1.solve()
 
 resultLS = np.matmul(pplus(), yn())
 
@@ -72,6 +81,9 @@ print("bLS =", round(bls, 4))
 print("========")
 
 plt.scatter(_x, _y)
+
+alp = float(alp.value[0])
+blp = float(blp.value[0])
 
 x_values = np.linspace(min(_x), max(_x), 100)
 y_values = als * x_values + bls

@@ -1,15 +1,21 @@
-import cvxopt
+from cvxopt.modeling import variable, op
+from cvxopt import matrix
+import numpy as np
 
-# Definicja macierzy P, q, G, h, A, b (można je dostosować do konkretnego problemu)
-P = cvxopt.matrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 0.0]])  # Macierz zawierająca zmienne x, a, b
-q = cvxopt.matrix([-2.0, -3.0, 0.0])  # Uwzględnienie zmiennej b w funkcji celu
-G = cvxopt.matrix([[1.0, 2.0, 0.0], [3.0, 4.0, 0.0]])  # Macierz ograniczeń uwzględniająca zmienne a i b
-h = cvxopt.matrix([1.0, 1.0])
-A = cvxopt.matrix([1.0, 1.0, 0.0], (1, 3))  # Macierz uwzględniająca zmienną a w równaniu liniowym
-b = cvxopt.matrix(1.0)
+data = np.genfromtxt('data01.csv', delimiter=',', dtype=None, encoding='utf-8')
 
-# Rozwiązanie problemu optymalizacji
-solution = cvxopt.solvers.qp(P, q, G, h, A, b)
+_x, _y = [], []
+r = []
 
-# Wyświetlenie wyniku optymalizacji
-print(solution['x'])
+for label in data:
+    _x.append(label[0])
+    _y.append(label[1])
+
+a = variable()
+b = variable()
+
+c1 = (a * _x + b - r <= _y)
+c2 = (-1* a * _x + b - r <= _y)
+
+p1 = op(sum(r), [c1, c2, c3, c4, c5, c6, c7, c8, c9])
+p1.solve()

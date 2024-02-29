@@ -2,6 +2,9 @@ import numpy as np
 import cvxopt as co
 from cvxopt.modeling import variable, op, dot, matrix
 
+# 311192 Ciszewksi Jakub
+# 311524 Tomczyk Michał
+
 lek1 = variable()
 lek2 = variable()
 sur1 = variable()

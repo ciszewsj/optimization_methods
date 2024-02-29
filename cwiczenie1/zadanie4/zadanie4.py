@@ -1,5 +1,8 @@
 import os
 
+# 311192 Ciszewksi Jakub
+# 311524 Tomczyk Michał
+
 import matplotlib.pyplot as plt
 import numpy as np
 from cvxopt.modeling import variable, op

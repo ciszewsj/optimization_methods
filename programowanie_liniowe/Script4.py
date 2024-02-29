@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from cvxopt.modeling import variable, op
+from cvxopt import matrix
 
 data = np.genfromtxt('data01.csv', delimiter=',', dtype=None, encoding='utf-8')
 
@@ -26,6 +27,13 @@ def pplus():
     return np.linalg.pinv(p())
 
 
+def xn():
+    xn = []
+    for elem in _x:
+        xn.append([elem, 1])
+    return np.array(xn)
+
+
 def yn():
     yn = []
     for elem in _y:
@@ -33,47 +41,33 @@ def yn():
     return np.array(yn)
 
 
-def xn():
-    xn = []
-    for elem in _x:
-        xn.append([elem])
-    return np.array(xn)
+fi = matrix(xn())
+theta = variable(2)
+tau = variable(len(_x))
+y = matrix(yn())
 
+i1 = matrix(1.0, (1, len(_x)))
 
-alp = variable()
-blp = variable()
+c1 = (fi * theta - y >= -1 * tau)
+c2 = (fi * theta - y <= tau)
 
-va = variable()
-vb = variable()
-
-
-def res(ax, bx, xp):
-    return ax * xp + bx
-
-
-c1 = (alp + blp <= 1)
-c2 = (alp + blp >= 1)
-
-
-# Assuming `op` is an optimization function from some library
-def solve_problem(a, b):
-    res = 0
-    for i in range(0, len(_x)):
-        res += abs(a * float(_x[i]) + b - float(_y[i]))
-    return res
-
-
-p1 = op(solve_problem(alp, blp), [])
+p1 = op(i1 * tau, [c1, c2])
 p1.solve()
+
+alp = theta[0][0]
+blp = theta[1][0]
 
 resultLS = np.matmul(pplus(), yn())
 
 als = resultLS[0][0]
 bls = resultLS[1][0]
 
+alp = float(alp.value()[0])
+blp = float(blp.value()[0])
+
 print("========")
-print("aLP =", alp.value)
-print("bLP =", blp.value)
+print("aLP =", alp)
+print("bLP =", blp)
 print("========")
 print("========")
 print("aLS =", round(als, 4))
@@ -82,20 +76,19 @@ print("========")
 
 plt.scatter(_x, _y)
 
-alp = float(alp.value[0])
-blp = float(blp.value[0])
-
 x_values = np.linspace(min(_x), max(_x), 100)
 y_values = als * x_values + bls
 plt.plot(x_values, y_values, color='red', label=f'Prosta: y = {als:.2f}x + {bls:.2f}')
 
 x_values = np.linspace(min(_x), max(_x), 100)
 y_values = alp * x_values + blp
-plt.plot(x_values, y_values, color='green', label=f'Prosta: y = {alp:.2f}x + {blp:.2f}')
+plt.plot(x_values, y_values, color='yellow', label=f'Prosta: y = {alp:.2f}x + {blp:.2f}')
 
 plt.xlabel('x')
 plt.ylabel('y')
 plt.title('Scatter Plot of x and y')
+
+plt.ylim(2, 10)
 
 plt.legend()
 

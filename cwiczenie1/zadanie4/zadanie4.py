@@ -1,9 +1,13 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 from cvxopt.modeling import variable, op
 from cvxopt import matrix
 
-data = np.genfromtxt('data01.csv', delimiter=',', dtype=None, encoding='utf-8')
+filepath = os.path.dirname(__file__) + '/data01.csv'
+
+data = np.genfromtxt(filepath, delimiter=',', dtype=None, encoding='utf-8')
 
 _x, _y = [], []
 

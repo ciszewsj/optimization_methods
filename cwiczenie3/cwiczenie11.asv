@@ -1,0 +1,25 @@
+clear all
+close all
+clc
+
+load('Data01.mat')
+
+q = 150;
+
+v = optimvar('v', numel(y), 1);
+
+Dv = v(2:end) - v(1:end-1);
+
+p = optimproblem;
+p.Objective = 0;
+p.Constraints.c1 = norm(Dv, 1) <= q;
+
+initial.v = rand(numel(y), 1);
+
+sol = solve(p, initial);
+
+newv = sol.v;
+
+Dvn = newv(2:end) - newv(1:end-1);
+
+ls = 

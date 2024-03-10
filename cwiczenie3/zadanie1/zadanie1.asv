@@ -1,0 +1,27 @@
+
+clear all
+close all
+clc
+load('Data01.mat')
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+n = length(y);
+tau = 2;
+D = spdiags([ones(n-1,1) -ones(n-1,1)], [0 1], n-1, n);
+
+cvx_begin
+    variable v(n); % Zmienna optymalizacyjna v
+    minimize(norm(y - v, 2) + tau*norm(D*v, 1)) % Funkcja celu z regularyzacją L1
+cvx_end
+
+cvx_begin
+    variable v(n); % Zmienna optymalizacyjna v
+    minimize(norm(y - v, 2) + tau*norm(D*v, 1)) % Funkcja celu z regularyzacją L1
+cvx_end
+
+figure;
+plot(1:n, y, 'bo', 1:n, v, 'r');
+xlabel('Indeks próbki');
+ylabel('Wartość sygnału');
+legend('Pomiar sygnału', 'Estymacja LASSO');
+title('Estymacja sygnału za pomocą LASSO');
